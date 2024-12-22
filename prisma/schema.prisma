@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int                     @id @default(autoincrement())
+  firebaseUid        String?                 @unique
+  organizationName   String
+  firstName          String
+  lastName           String
+  contactEmail       String                  @unique
+  propertyTypeId     Int
+  propertyType       PropertyType            @relation(fields: [propertyTypeId], references: [id])
+  buildingSize       Float
+  buildingCode       String
+  emissionFactor     Float?
+  emissionLimit      Float?
+  utilityProvider    String
+  accountNumber      String                  @unique
+  usage              Usage[]
+  answers            Answer[]
+  dummyUsage         DummyUsage[]
+  propertyAnswers    PropertySpecificAnswer[]
+  complianceReports  ComplianceReport[]
+}
+
+model Usage {
+  id             Int        @id @default(autoincrement())
+  startDate      DateTime
+  endDate        DateTime
+  amount         Float
+  rateCode       String
+  demand         Float
+  meterType      String
+  userId         Int
+  user           User       @relation(fields: [userId], references: [id])
+}
+
+model Question {
+  id             Int        @id @default(autoincrement())
+  question       String
+  validChoices   String     // JSON or string array for choices
+  answers        Answer[]
+}
+
+model Answer {
+  id             Int        @id @default(autoincrement())
+  answer         String
+  questionId     Int
+  question       Question   @relation(fields: [questionId], references: [id])
+  userId         Int
+  user           User       @relation(fields: [userId], references: [id])
+}
+
+model DummyUsage {
+  id               Int      @id @default(autoincrement())
+  timestamp        DateTime
+  usageAmountKwh   Float
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id])
+}
+
+model PropertyType {
+  id                  Int                     @id @default(autoincrement())
+  name                String                  @unique
+  consumptionAreas    ConsumptionArea[]
+  users               User[]
+}
+
+model ConsumptionArea {
+  id                  Int                     @id @default(autoincrement())
+  name                String
+  propertyTypeId      Int
+  propertyType        PropertyType            @relation(fields: [propertyTypeId], references: [id])
+  questions           PropertySpecificQuestion[]
+}
+
+model PropertySpecificQuestion {
+  id                  Int                     @id @default(autoincrement())
+  question            String
+  validChoices        String                  // JSON or string array for choices
+  consumptionAreaId   Int
+  consumptionArea     ConsumptionArea         @relation(fields: [consumptionAreaId], references: [id])
+  answers             PropertySpecificAnswer[]
+}
+
+model PropertySpecificAnswer {
+  id                  Int                     @id @default(autoincrement())
+  answer              String
+  questionId          Int
+  question            PropertySpecificQuestion @relation(fields: [questionId], references: [id])
+  userId              Int
+  user                User                    @relation(fields: [userId], references: [id])
+}
+
+model ComplianceReport {
+  id             Int      @id @default(autoincrement())
+  reportContent  String
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

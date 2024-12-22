@@ -1,0 +1,53 @@
+Estimating a building's carbon penalty under NYC Local Law 97 involves several steps:
+
+Determine the Building's Covered Area: Identify the gross floor area (GFA) of the building, which is the total floor area inside the building envelope, including basements, mezzanines, and penthouses.
+
+Calculate Emissions: Calculate the building's annual greenhouse gas emissions. This involves determining the energy consumption for different energy sources (e.g., electricity, natural gas, steam) and converting these into carbon emissions using specific conversion factors.
+
+Identify Emission Limits: Find the specific emission intensity limit for the building's occupancy group. Local Law 97 sets different limits for various building types, measured in kilograms of CO2 equivalent per square foot (kgCO2e/sqft).
+
+Compare Actual Emissions to Limits: Multiply the building’s GFA by the applicable emission intensity limit to determine the allowable emissions. Compare this to the building’s actual emissions to determine any excess emissions.
+
+Calculate Penalty: Multiply the excess emissions by the penalty rate. According to Local Law 97, the penalty is $268 per metric ton of CO2e above the limit.
+
+Steps in Detail
+Determine the Building's Covered Area
+
+Obtain the gross floor area (GFA) of the building.
+Calculate Emissions
+
+Determine energy consumption (e.g., in kWh for electricity, therms for natural gas).
+Use conversion factors to calculate CO2 emissions:
+For electricity: (kWh consumed) * (emission factor in kgCO2e/kWh)
+For natural gas: (therms consumed) * (emission factor in kgCO2e/therm)
+Sum the emissions from all energy sources to get the total annual emissions.
+Identify Emission Limits
+
+Refer to the specific limits for the building’s occupancy group as specified in Local Law 97.
+Compare Actual Emissions to Limits
+
+Calculate allowable emissions: (GFA) * (emission intensity limit for the building type).
+Determine excess emissions: (Actual emissions) - (Allowable emissions).
+Calculate Penalty
+
+Multiply the excess emissions by $268/metric ton to find the annual penalty.
+Example Calculation
+Building's GFA: 100,000 sqft
+Energy Consumption:
+Electricity: 1,000,000 kWh
+Natural Gas: 50,000 therms
+Emission Factors:
+Electricity: 0.000453 kgCO2e/kWh
+Natural Gas: 5.3 kgCO2e/therm
+Calculate Emissions:
+Electricity emissions: 1,000,000 kWh * 0.000453 kgCO2e/kWh = 453,000 kgCO2e
+Natural Gas emissions: 50,000 therms * 5.3 kgCO2e/therm = 265,000 kgCO2e
+Total emissions: 453,000 kgCO2e + 265,000 kgCO2e = 718,000 kgCO2e (718 metric tons CO2e)
+Emission Limit:
+Emission intensity limit: 0.0012 kgCO2e/sqft (example limit for the building type)
+Allowable emissions: 100,000 sqft * 0.0012 kgCO2e/sqft = 120,000 kgCO2e (120 metric tons CO2e)
+Excess Emissions:
+Excess emissions: 718 metric tons CO2e - 120 metric tons CO2e = 598 metric tons CO2e
+Penalty:
+Penalty: 598 metric tons CO2e * $268/metric ton = $160,264
+The building's annual carbon penalty under NYC LL97 would be $160,264.
