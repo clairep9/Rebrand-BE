@@ -1,61 +1,68 @@
 \c rebrand;
 
--- user table
-INSERT INTO "users" (
-    "organization_name", 
-    "first_name", 
-    "last_name", 
-    "contact_email", 
-    "property_type_id", 
-    "building_size", 
-    "building_code", 
-    "emission_factor", 
-    "emission_limit", 
-    "utility_provider", 
-    "account_number"
-) VALUES (
-    'Little Brother Enterprise', 
-    'Matthew', 
-    'Adams', 
-    'matthew.adams@lbenterprise.com', 
-    1,  
-    27000, 
-    'B', 
-    0.00987, 
-    0.00846, 
-    'Con Edison', 
-    '1234567891234'
-);
+-- property_type table
+INSERT INTO property_type (property_type_name, property_type_code, emission_factor) VALUES 
+    ('Adult Education', 'B', 0.00758),
+    ('Ambulatory Surgical Center', 'B*', 0.01181),
+    ('Automobile Dealership', 'B', 0.00675),
+    ('Bank Branch', 'B', 0.00987),
+    ('Bowling Alley', 'A-3', 0.00574),
+    ('College/University', 'B', 0.00987),
+    ('Convenience Store without Gas Station', 'M', 0.00675),
+    ('Courthouse', 'A-3', 0.00426),
+    ('Data Center', 'B', 0.02381),
+    ('Distribution Center', 'S', 0.00574),
+    ('Enclosed Mall', 'M', 0.01074),
+    ('Financial Office', 'B', 0.00846),
+    ('Fitness Center/Health Club/Gym', 'A-3', 0.00987),
+    ('Food Sales', 'M', 0.01181),
+    ('Food Service', 'M', 0.01181),
+    ('Hospital (General Medical & Surgical)', 'I-2', 0.02381),
+    ('Hotel', 'R-1',  0.00987),
+    ('K-12 School', 'E',  0.00675),
+    ('Laboratory', 'B*', 0.02381),
+    ('Library', 'B', 0.00675),
+    ('Lifestyle Center', 'M', 0.00846),
+    ('Mailing Center/Post Office', 'B', 0.00426),
+    ('Manufacturing/Industrial Plant', 'F', 0.00758),
+    ('Medical Office', 'B', 0.01074),
+    ('Movie Theater', 'A-1', 0.01181),
+    ('Multifamily Housing', 'R-2', 0.00675),
+    ('Museum', 'A-3', 0.01181),
+    ('Non-Refrigerated Warehouse', 'S-1', 0.00426),
+    ('Office', 'B', 0.00758),
+    ('Other - Education', 'B', 0.00846),
+    ('Other - Entertainment/Public Assembly', 'A-3', 0.00987),
+    ('Other - Lodging/Residential', 'R-1', 0.00758),
+    ('Other - Mall', 'M', 0.01074),
+    ('Other - Public Services', 'B', 0.00758),
+    ('Other - Recreation', 'A-3', 0.00987),
+    ('Other - Restaurant/Bar', 'A-2', 0.02381),
+    ('Other - Services', 'B', 0.01074),
+    ('Other - Specialty Hospital', 'I-2', 0.02381),
+    ('Other - Technology/Science', 'B*', 0.02381),
+    ('Outpatient Rehabilitation/Physical Therapy', 'B', 0.01181),
+    ('Parking', 'S-2', 0.00426),
+    ('Performing Arts', 'A-1', 0.00846),
+    ('Personal Services (Health/Beauty, Dry Cleaning, etc.)', 'B', 0.00574),
+    ('Pre-school/Daycare', 'I-4', 0.00675),
+    ('Refrigerated Warehouse', 'S-2', 0.00987),
+    ('Repair Services (Vehicle, Shoe, Locksmith, etc.)', 'F-1', 0.00426),
+    ('Residence Hall/Dormitory', 'R-1', 0.00758),
+    ('Residential Care Facility', 'I-1', 0.01138),
+    ('Restaurant', 'A-2', 0.01181),
+    ('Retail Store', 'M', 0.00758),
+    ('Self-Storage Facility', 'S-1', 0.00426),
+    ('Senior Care Community', 'I-2', 0.02381),
+    ('Social/Meeting Hall', 'A-3', 0.00846),
+    ('Strip Mall', 'M', 0.01181),
+    ('Supermarket/Grocery Store', 'M', 0.01074),
+    ('Transportation Terminal/Station', 'A-3', 0.01074),
+    ('Urgent Care/Clinic/Other Outpatient', 'B', 0.00758),
+    ('Vocational School', 'E', 0.00758),
+    ('Wholesale Club/Supercenter', 'M', 0.01074),
+    ('Worship Facility', 'A-3', 0.01074);
 
--- usage table
-INSERT INTO "usage" (
-    "start_date", 
-    "end_date", 
-    "amount", 
-    "rate_code", 
-    "demand", 
-    "meter_type", 
-    "user_uuid"
-) VALUES (
-    NOW() - INTERVAL '1 month', 
-    NOW(), 
-    300.0, 
-    'R001', 
-    50.0, 
-    'Electric', 
-    :user_uuid
-);
-
--- dummy_usage table
-INSERT INTO "dummy_usage" (
-    "timestamp", 
-    "usage_amount_kwh", 
-    "user_uuid"
-) VALUES (
-    NOW() - INTERVAL '1 week', 
-    200.0, 
-    :user_uuid
-);
 
 -- assessment_questions table
 INSERT INTO "assessment_questions" (
@@ -108,105 +115,72 @@ INSERT INTO "assessment_questions" (
  '["Yes, demand response", "Yes, energy conservation", "No", "Not sure"]');
  
 
--- property_type table
-INSERT INTO "property_type" ("name") VALUES 
-    ('Adult Education'),
-    ('Ambulatory Surgical Center'),
-    ('Automobile Dealership'),
-    ('Bank Branch'),
-    ('Bowling Alley'),
-    ('College/University'),
-    ('Convenience Store without Gas Station'),
-    ('Courthouse'),
-    ('Data Center'),
-    ('Distribution Center'),
-    ('Enclosed Mall'),
-    ('Financial Office'),
-    ('Fitness Center/Health Club/Gym'),
-    ('Food Sales'),
-    ('Food Service'),
-    ('Hospital (General Medical & Surgical)'),
-    ('Hotel'),
-    ('K-12 School'),
-    ('Laboratory'),
-    ('Library'),
-    ('Lifestyle Center'),
-    ('Mailing Center/Post Office'),
-    ('Manufacturing/Industrial Plant'),
-    ('Medical Office'),
-    ('Movie Theater'),
-    ('Multifamily Housing'),
-    ('Museum'),
-    ('Non-Refrigerated Warehouse'),
-    ('Office'),
-    ('Other - Education'),
-    ('Other - Entertainment/Public Assembly'),
-    ('Other - Lodging/Residential'),
-    ('Other - Mall'),
-    ('Other - Public Services'),
-    ('Other - Recreation'),
-    ('Other - Restaurant/Bar'),
-    ('Other - Services'),
-    ('Other - Specialty Hospital'),
-    ('Other - Technology/Science'),
-    ('Outpatient Rehabilitation/Physical Therapy'),
-    ('Parking'),
-    ('Performing Arts'),
-    ('Personal Services (Health/Beauty, Dry Cleaning, etc.)'),
-    ('Pre-school/Daycare'),
-    ('Refrigerated Warehouse'),
-    ('Repair Services (Vehicle, Shoe, Locksmith, etc.)'),
-    ('Residence Hall/Dormitory'),
-    ('Residential Care Facility'),
-    ('Restaurant'),
-    ('Retail Store'),
-    ('Self-Storage Facility'),
-    ('Senior Care Community'),
-    ('Social/Meeting Hall'),
-    ('Strip Mall'),
-    ('Supermarket/Grocery Store'),
-    ('Transportation Terminal/Station'),
-    ('Urgent Care/Clinic/Other Outpatient'),
-    ('Vocational School'),
-    ('Wholesale Club/Supercenter'),
-    ('Worship Facility');
-
--- consumption_area table
-INSERT INTO "consumption_area" (
-    "name", 
-    "property_type_id"
+-- user table
+INSERT INTO "users" (
+    "organization_name", 
+    "first_name", 
+    "last_name", 
+    "contact_email", 
+    "property_type_id", 
+    "building_size", 
+    "building_code",  
+    "utility_provider", 
+    "account_number"
 ) VALUES (
-    'Office Space', 
-    :property_type_id
+    'Little Brother Enterprise', 
+    'Matthew', 
+    'Adams', 
+    'matthew.adams@lbenterprise.com', 
+    29,  
+    26000, 
+    'B', 
+    'Con Edison', 
+    '9876543210987'
 );
 
--- property_specific_question table
-INSERT INTO "property_specific_question" (
-    "question", 
-    "valid_choices", 
-    "consumption_area_id"
+INSERT INTO "users" (
+    "organization_name", 
+    "first_name", 
+    "last_name", 
+    "contact_email", 
+    "property_type_id", 
+    "building_size", 
+    "building_code",   
+    "utility_provider", 
+    "account_number"
 ) VALUES (
-    'What type of lighting do you use?', 
-    '["LED", "Fluorescent", "Incandescent"]', 
-    :consumption_area_id
+    'Omaha Retail', 
+    'Lilly', 
+    'Baker', 
+    'lilly.baker@omaharetail.com', 
+    50,  
+    33000, 
+    'M', 
+    'Con Edison', 
+    '1234567891234'
 );
 
--- property_specific_answer table
-INSERT INTO "property_specific_answer" (
-    "answer", 
-    "question_id", 
-    "user_uuid"
+
+INSERT INTO "users" (
+    "organization_name", 
+    "first_name", 
+    "last_name", 
+    "contact_email", 
+    "property_type_id", 
+    "building_size", 
+    "building_code",  
+    "utility_provider", 
+    "account_number"
 ) VALUES (
-    'LED', 
-    :property_specific_question_id, 
-    :user_uuid
+    'Capital Finance', 
+    'John', 
+    'Roberts', 
+    'john.roberts@capitalfinance.com', 
+    4,  
+    52000, 
+    'B',  
+    'National Grid', 
+    '6543210987654'
 );
 
--- compliance_report table
-INSERT INTO "compliance_report" (
-    "report_content", 
-    "user_uuid"
-) VALUES (
-    'Annual compliance report for Little Brother Enterprise.', 
-    :user_uuid
-);
+

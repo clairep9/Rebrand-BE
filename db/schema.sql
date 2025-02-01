@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS answer;
 DROP TABLE IF EXISTS question;
 DROP TABLE IF EXISTS usage;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS categorical_questions;
 
 CREATE TABLE users (
     uuid TEXT DEFAULT gen_random_uuid()::TEXT PRIMARY KEY,
@@ -21,24 +23,11 @@ CREATE TABLE users (
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
     contact_email VARCHAR UNIQUE NOT NULL,
-    property_type_id INT NOT NULL,
+    property_type_id INTEGER NOT NULL REFERENCES property_type(id),
     building_size FLOAT NOT NULL,
     building_code VARCHAR NOT NULL,
-    emission_factor FLOAT,
-    emission_limit FLOAT,
     utility_provider VARCHAR NOT NULL,
     account_number VARCHAR UNIQUE NOT NULL
-);
-
-CREATE TABLE usage (
-    id SERIAL PRIMARY KEY,
-    start_date TIMESTAMP NOT NULL,
-    end_date TIMESTAMP NOT NULL,
-    amount FLOAT NOT NULL,
-    rate_code VARCHAR NOT NULL,
-    demand FLOAT NOT NULL,
-    meter_type VARCHAR NOT NULL,
-    user_uuid TEXT REFERENCES users(uuid)
 );
 
 
@@ -55,42 +44,146 @@ CREATE TABLE user_assessment_answers (
     selected_option TEXT NOT NULL,  
 );
 
-CREATE TABLE dummy_usage (
-    id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMP NOT NULL,
-    usage_amount_kwh FLOAT NOT NULL,
-    user_uuid TEXT REFERENCES users(uuid)
-);
-
 CREATE TABLE property_type (
-    id TEXT DEFAULT gen_random_uuid() PRIMARY KEY,
-    name VARCHAR UNIQUE NOT NULL
+    id SERIAL PRIMARY KEY,
+    property_type_name VARCHAR UNIQUE NOT NULL,
+    property_type_code VARCHAR,
+    emission_factor DECIMAL(10, 5)
 );
 
 CREATE TABLE consumption_area (
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    property_type_id TEXT REFERENCES property_type(id)
+    consumption_area_name VARCHAR NOT NULL,
+    consumption_area_code VARCHAR,
+    property_type_id INT NOT NULL REFERENCES property_type(id)
 );
 
 CREATE TABLE property_specific_question (
     id SERIAL PRIMARY KEY,
     question VARCHAR NOT NULL,
     valid_choices VARCHAR NOT NULL,
-    consumption_area_id INT REFERENCES consumption_area(id)
+    consumption_area_id INT NOT NULL REFERENCES consumption_area(id)
 );
 
 CREATE TABLE property_specific_answer (
     id SERIAL PRIMARY KEY,
     answer VARCHAR NOT NULL,
-    question_id INT REFERENCES property_specific_question(id),
-    user_uuid TEXT REFERENCES users(uuid)
+    question_id INT NOT NULL REFERENCES property_specific_question(id) ON DELETE CASCADE,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid) ON DELETE CASCADE
 );
 
 CREATE TABLE compliance_report (
     id SERIAL PRIMARY KEY,
     report_content VARCHAR NOT NULL,
-    user_uuid TEXT REFERENCES users(uuid),
+    user_uuid TEXT REFERENCES users(uuid) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Daily Aggregated Data
+CREATE TABLE electricity_usage_daily (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    date DATE NOT NULL,
+    usage_kwh DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE natural_gas_usage_daily (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    date DATE NOT NULL,
+    usage_kbtu DECIMAL(10, 2) NOT NULL, 
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Weekly Aggregated Data
+CREATE TABLE electricity_usage_weekly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    usage_kwh DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE natural_gas_usage_weekly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    usage_kbtu DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Monthly Aggregated Data
+CREATE TABLE electricity_usage_monthly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    month DATE NOT NULL,
+    usage_kwh DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE natural_gas_usage_monthly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    month DATE NOT NULL,
+    usage_kbtu DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Yearly Aggregated Data
+CREATE TABLE electricity_usage_yearly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    year INTEGER NOT NULL,
+    usage_kwh DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE natural_gas_usage_yearly (
+    id SERIAL PRIMARY KEY,
+    user_uuid TEXT NOT NULL REFERENCES users(uuid),
+    property_id INTEGER NOT NULL REFERENCES property_type(id),
+    year INTEGER NOT NULL,
+    usage_kbtu DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    property_type_id INTEGER NOT NULL REFERENCES property_type(id),
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE categorical_questions (
+    id SERIAL PRIMARY KEY,
+    category_id INTEGER NOT NULL REFERENCES categories(id),
+    question_text TEXT NOT NULL,
+    valid_choices JSON NOT NULL  
+);
+
