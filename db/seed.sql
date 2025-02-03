@@ -118,8 +118,7 @@ INSERT INTO "assessment_questions" (
 -- user table
 INSERT INTO "users" (
     "organization_name", 
-    "first_name", 
-    "last_name", 
+    "username",
     "contact_email", 
     "property_type_id", 
     "building_size", 
@@ -128,8 +127,7 @@ INSERT INTO "users" (
     "account_number"
 ) VALUES (
     'Little Brother Enterprise', 
-    'Matthew', 
-    'Adams', 
+    'littlebrotherenterprise',
     'matthew.adams@lbenterprise.com', 
     29,  
     26000, 
@@ -140,8 +138,7 @@ INSERT INTO "users" (
 
 INSERT INTO "users" (
     "organization_name", 
-    "first_name", 
-    "last_name", 
+    "username", 
     "contact_email", 
     "property_type_id", 
     "building_size", 
@@ -150,8 +147,7 @@ INSERT INTO "users" (
     "account_number"
 ) VALUES (
     'Omaha Retail', 
-    'Lilly', 
-    'Baker', 
+    'omaharetail', 
     'lilly.baker@omaharetail.com', 
     50,  
     33000, 
@@ -163,8 +159,7 @@ INSERT INTO "users" (
 
 INSERT INTO "users" (
     "organization_name", 
-    "first_name", 
-    "last_name", 
+    "username", 
     "contact_email", 
     "property_type_id", 
     "building_size", 
@@ -173,8 +168,7 @@ INSERT INTO "users" (
     "account_number"
 ) VALUES (
     'Capital Finance', 
-    'John', 
-    'Roberts', 
+    'capitalfinance', 
     'john.roberts@capitalfinance.com', 
     4,  
     52000, 
@@ -184,3 +178,9 @@ INSERT INTO "users" (
 );
 
 
+INSERT INTO user_assessment_questions (question, description) VALUES 
+('What''s your organization''s name?', 'So we know what to call you.'),
+('What is the size of your building in square feet?', 'This information allows us to assess your building''s eligibility for compliance.'),
+('What is your property type?', 'Choosing the correct property type helps us determine your compliance requirements.'),
+('Select your utility provider', 'Which utility partner provides your electricity?'),
+('What is your account number?', 'This helps us gather your energy data.');

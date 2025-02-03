@@ -4,24 +4,28 @@ CREATE DATABASE rebrand;
 
 \c rebrand;
 
-DROP TABLE IF EXISTS compliance_report;
-DROP TABLE IF EXISTS property_specific_answer;
-DROP TABLE IF EXISTS property_specific_question;
-DROP TABLE IF EXISTS consumption_area;
-DROP TABLE IF EXISTS property_type;
-DROP TABLE IF EXISTS dummy_usage;
-DROP TABLE IF EXISTS answer;
-DROP TABLE IF EXISTS question;
-DROP TABLE IF EXISTS usage;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS categorical_questions;
+DROP TABLE IF EXISTS user_assessment_questions;
+DROP TABLE IF EXISTS user_assessment_answers;
+DROP TABLE IF EXISTS property_type;
+DROP TABLE IF EXISTS energy_usage_areas;
+DROP TABLE IF EXISTS energy_usage_areas_questions;
+DROP TABLE IF EXISTS energy_usage_areas_answers;
+DROP TABLE IF EXISTS electricity_usage_daily;
+DROP TABLE IF EXISTS natural_gas_usage_daily;
+DROP TABLE IF EXISTS electricity_usage_weekly;
+DROP TABLE IF EXISTS natural_gas_usage_weekly;
+DROP TABLE IF EXISTS electricity_usage_monthly;
+DROP TABLE IF EXISTS natural_gas_usage_monthly;
+DROP TABLE IF EXISTS electricity_usage_yearly;
+DROP TABLE IF EXISTS natural_gas_usage_yearly;
+
+DROP TABLE IF EXISTS compliance_report;
 
 CREATE TABLE users (
     uuid TEXT DEFAULT gen_random_uuid()::TEXT PRIMARY KEY,
     organization_name VARCHAR NOT NULL,
-    first_name VARCHAR NOT NULL,
-    last_name VARCHAR NOT NULL,
+    username VARCHAR NOT NULL,
     contact_email VARCHAR UNIQUE NOT NULL,
     property_type_id INTEGER NOT NULL REFERENCES property_type(id),
     building_size FLOAT NOT NULL,
@@ -31,18 +35,12 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE assessment_questions (
+CREATE TABLE user_assessment_questions (
     id SERIAL PRIMARY KEY,
     question TEXT NOT NULL,
-    valid_choices JSON NOT NULL 
+    description TEXT
 );
 
-CREATE TABLE user_assessment_answers (
-    id SERIAL PRIMARY KEY,
-    user_uuid TEXT REFERENCES users(uuid) ON DELETE CASCADE, 
-    question_id INT REFERENCES assessment_questions(id) ON DELETE CASCADE, 
-    selected_option TEXT NOT NULL,  
-);
 
 CREATE TABLE property_type (
     id SERIAL PRIMARY KEY,
@@ -51,34 +49,26 @@ CREATE TABLE property_type (
     emission_factor DECIMAL(10, 5)
 );
 
-CREATE TABLE consumption_area (
+CREATE TABLE energy_usage_areas (
     id SERIAL PRIMARY KEY,
-    consumption_area_name VARCHAR NOT NULL,
-    consumption_area_code VARCHAR,
-    property_type_id INT NOT NULL REFERENCES property_type(id)
+    property_type_id INTEGER NOT NULL REFERENCES property_type(id),
+    area_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE property_specific_question (
+CREATE TABLE energy_usage_areas_questions (
     id SERIAL PRIMARY KEY,
-    question VARCHAR NOT NULL,
-    valid_choices VARCHAR NOT NULL,
-    consumption_area_id INT NOT NULL REFERENCES consumption_area(id)
+    area_id INTEGER NOT NULL REFERENCES energy_usage_areas(id),
+    question_text TEXT NOT NULL,
+    valid_choices JSON NOT NULL  
 );
 
-CREATE TABLE property_specific_answer (
+CREATE TABLE energy_usage_areas_answers (
     id SERIAL PRIMARY KEY,
-    answer VARCHAR NOT NULL,
-    question_id INT NOT NULL REFERENCES property_specific_question(id) ON DELETE CASCADE,
-    user_uuid TEXT NOT NULL REFERENCES users(uuid) ON DELETE CASCADE
-);
-
-CREATE TABLE compliance_report (
-    id SERIAL PRIMARY KEY,
-    report_content VARCHAR NOT NULL,
     user_uuid TEXT REFERENCES users(uuid) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    question_id INTEGER REFERENCES energy_usage_areas_questions(id) ON DELETE CASCADE,
+    answer TEXT NOT NULL
 );
+
 
 -- Daily Aggregated Data
 CREATE TABLE electricity_usage_daily (
@@ -174,16 +164,11 @@ CREATE TABLE natural_gas_usage_yearly (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE categories (
-    id SERIAL PRIMARY KEY,
-    property_type_id INTEGER NOT NULL REFERENCES property_type(id),
-    name VARCHAR(255) NOT NULL
-);
 
-CREATE TABLE categorical_questions (
+CREATE TABLE compliance_report (
     id SERIAL PRIMARY KEY,
-    category_id INTEGER NOT NULL REFERENCES categories(id),
-    question_text TEXT NOT NULL,
-    valid_choices JSON NOT NULL  
+    report_content VARCHAR NOT NULL,
+    user_uuid TEXT REFERENCES users(uuid) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
